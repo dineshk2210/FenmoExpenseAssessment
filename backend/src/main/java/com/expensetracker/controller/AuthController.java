@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin
 public class AuthController {
 
     private final UserRepository userRepo;
@@ -29,7 +28,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
-        if (userRepo.existsByEmail(req.getEmail())) {
+        if (userRepo.existsByEmail(req.getEmail().toLowerCase().trim())) {
             return ResponseEntity.badRequest().body(Map.of("error", "Email already registered"));
         }
 
