@@ -8,6 +8,31 @@ import Summary from "./components/Summary";
 import Pagination from "./components/Pagination";
 import Toast from "./components/Toast";
 
+function Navbar({ user, onLogout }) {
+  return (
+    <nav className="navbar">
+      <div className="navbar-inner">
+        <div className="navbar-brand">💰 Expense Tracker</div>
+        <div className="navbar-right">
+          <span className="navbar-user">👤 {user?.name}</span>
+          <button className="btn-outline-sm" onClick={onLogout}>Logout</button>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-inner">
+        <p>© {new Date().getFullYear()} Expense Tracker — Built with ❤️</p>
+        <p>Contact us at <a href="mailto:contact@fenmo.ai">contact@fenmo.ai</a> · <a href="https://fenmo.ai" target="_blank" rel="noopener noreferrer">fenmo.ai</a></p>
+      </div>
+    </footer>
+  );
+}
+
 export default function App() {
   const [authed, setAuthed] = useState(isLoggedIn());
   const [expenses, setExpenses] = useState([]);
@@ -35,10 +60,8 @@ export default function App() {
 
   useEffect(() => { if (authed) load(); }, [authed, load]);
 
-  // Reset to page 0 when filters change
   const handleCategoryChange = (c) => { setCategory(c); setPage(0); };
   const handleSortChange = (s) => { setSort(s); setPage(0); };
-
   const handleCreated = () => { setPage(0); load(); };
   const handleCreateError = (msg) => setToast(msg);
 
@@ -47,22 +70,23 @@ export default function App() {
   const user = getUser();
 
   return (
-    <div className="container">
+    <div className="app-layout">
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
-      <div className="header">
-        <h1>💰 Expense Tracker</h1>
-        <div className="user-info">
-          <span>Hi, {user?.name}</span>
-          <button className="link-btn" onClick={() => { logout(); setAuthed(false); }}>Logout</button>
+      <Navbar user={user} onLogout={() => { logout(); setAuthed(false); }} />
+      <main className="container">
+        <div className="section-card">
+          <ExpenseForm onCreated={handleCreated} onError={handleCreateError} />
         </div>
-      </div>
-      <ExpenseForm onCreated={handleCreated} onError={handleCreateError} />
-      <hr />
-      <Filters category={category} sort={sort} onCategoryChange={handleCategoryChange} onSortChange={handleSortChange} />
-      {error && <p className="error" role="alert">{error}</p>}
-      <Summary expenses={expenses} />
-      <ExpenseList expenses={expenses} loading={loading} />
-      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+        <div className="section-card">
+          <h2 className="section-title">📊 Your Expenses</h2>
+          <Filters category={category} sort={sort} onCategoryChange={handleCategoryChange} onSortChange={handleSortChange} />
+          {error && <p className="error" role="alert">{error}</p>}
+          <Summary expenses={expenses} />
+          <ExpenseList expenses={expenses} loading={loading} />
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
