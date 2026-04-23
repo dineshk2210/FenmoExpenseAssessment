@@ -11,6 +11,9 @@ public class Expense {
     @Id
     private String id;
 
+    @Column(nullable = false)
+    private String userId;
+
     @Column(unique = true)
     private String idempotencyKey;
 
@@ -36,6 +39,8 @@ public class Expense {
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+    public String getUserId() { return userId; }
+    public void setUserId(String u) { this.userId = u; }
     public String getIdempotencyKey() { return idempotencyKey; }
     public void setIdempotencyKey(String k) { this.idempotencyKey = k; }
     public Long getAmountCents() { return amountCents; }

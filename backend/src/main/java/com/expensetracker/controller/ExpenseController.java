@@ -7,6 +7,7 @@ import com.expensetracker.repository.ExpenseRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/expenses")
-@CrossOrigin
 public class ExpenseController {
 
     private final ExpenseRepository repo;
@@ -24,9 +24,14 @@ public class ExpenseController {
         this.repo = repo;
     }
 
+    private String currentUserId() {
+        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
     @PostMapping
     public ResponseEntity<ExpenseResponse> create(@Valid @RequestBody CreateExpenseRequest req) {
-        // Idempotency check
+        String userId = currentUserId();
+
         if (req.getIdempotencyKey() != null) {
             Optional<Expense> existing = repo.findByIdempotencyKey(req.getIdempotencyKey());
             if (existing.isPresent()) {
@@ -36,6 +41,7 @@ public class ExpenseController {
 
         Expense e = new Expense();
         e.setId(UUID.randomUUID().toString());
+        e.setUserId(userId);
         e.setIdempotencyKey(req.getIdempotencyKey());
         e.setAmountCents(Math.round(req.getAmount() * 100));
         e.setCategory(req.getCategory().trim());
@@ -45,7 +51,6 @@ public class ExpenseController {
         try {
             repo.save(e);
         } catch (Exception ex) {
-            // Race condition fallback: another thread inserted with same key
             if (req.getIdempotencyKey() != null) {
                 Optional<Expense> existing = repo.findByIdempotencyKey(req.getIdempotencyKey());
                 if (existing.isPresent()) {
@@ -63,17 +68,18 @@ public class ExpenseController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String sort) {
 
+        String userId = currentUserId();
         List<Expense> expenses;
         boolean sortByDate = "date_desc".equals(sort);
 
         if (category != null && !category.isBlank()) {
             expenses = sortByDate
-                    ? repo.findByCategoryOrderByDateDescCreatedAtDesc(category)
-                    : repo.findByCategoryOrderByCreatedAtDesc(category);
+                    ? repo.findByUserIdAndCategoryOrderByDateDescCreatedAtDesc(userId, category)
+                    : repo.findByUserIdAndCategoryOrderByCreatedAtDesc(userId, category);
         } else {
             expenses = sortByDate
-                    ? repo.findAllByOrderByDateDescCreatedAtDesc()
-                    : repo.findAllByOrderByCreatedAtDesc();
+                    ? repo.findByUserIdOrderByDateDescCreatedAtDesc(userId)
+                    : repo.findByUserIdOrderByCreatedAtDesc(userId);
         }
 
         return expenses.stream().map(ExpenseResponse::from).toList();

@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface ExpenseRepository extends JpaRepository<Expense, String> {
     Optional<Expense> findByIdempotencyKey(String idempotencyKey);
-    List<Expense> findByCategoryOrderByDateDescCreatedAtDesc(String category);
-    List<Expense> findByCategoryOrderByCreatedAtDesc(String category);
-    List<Expense> findAllByOrderByDateDescCreatedAtDesc();
-    List<Expense> findAllByOrderByCreatedAtDesc();
+    List<Expense> findByUserIdAndCategoryOrderByDateDescCreatedAtDesc(String userId, String category);
+    List<Expense> findByUserIdAndCategoryOrderByCreatedAtDesc(String userId, String category);
+    List<Expense> findByUserIdOrderByDateDescCreatedAtDesc(String userId);
+    List<Expense> findByUserIdOrderByCreatedAtDesc(String userId);
 }

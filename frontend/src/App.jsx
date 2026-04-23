@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchExpenses } from "./api";
+import { fetchExpenses, isLoggedIn, getUser, logout } from "./api";
+import AuthPage from "./components/AuthPage";
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
 import Filters from "./components/Filters";
 import Summary from "./components/Summary";
 
 export default function App() {
+  const [authed, setAuthed] = useState(isLoggedIn());
   const [expenses, setExpenses] = useState([]);
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("date_desc");
@@ -25,11 +27,21 @@ export default function App() {
     }
   }, [category, sort]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { if (authed) load(); }, [authed, load]);
+
+  if (!authed) return <AuthPage onAuth={() => setAuthed(true)} />;
+
+  const user = getUser();
 
   return (
     <div className="container">
-      <h1>💰 Expense Tracker</h1>
+      <div className="header">
+        <h1>💰 Expense Tracker</h1>
+        <div className="user-info">
+          <span>Hi, {user?.name}</span>
+          <button className="link-btn" onClick={() => { logout(); setAuthed(false); }}>Logout</button>
+        </div>
+      </div>
       <ExpenseForm onCreated={load} />
       <hr />
       <Filters category={category} sort={sort} onCategoryChange={setCategory} onSortChange={setSort} />
