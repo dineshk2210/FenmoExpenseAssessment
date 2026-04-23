@@ -15,10 +15,12 @@ export default function Layout({ children }) {
     <div className="app-layout">
       <nav className="navbar">
         <div className="navbar-inner">
-          <Link to={authed ? "/dashboard" : "/"} className="navbar-brand">💰 Expense Tracker</Link>
+          <Link to="/" className="navbar-brand">💰 Expense Tracker</Link>
           <div className="navbar-right">
             {authed ? (
               <>
+                <Link to="/" className="nav-link">Home</Link>
+                <Link to="/dashboard" className="nav-link">Dashboard</Link>
                 <span className="navbar-user">👤 {user?.name}</span>
                 <button className="btn-outline-sm" onClick={handleLogout}>Logout</button>
               </>

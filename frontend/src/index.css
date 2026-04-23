@@ -23,6 +23,8 @@ body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: v
 .navbar-brand { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; color: #fff; text-decoration: none; }
 .navbar-right { display: flex; align-items: center; gap: 0.75rem; }
 .navbar-user { font-size: 0.875rem; opacity: 0.9; }
+.nav-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 0.25rem 0; }
+.nav-link:hover { color: #fff; }
 .btn-outline-sm { padding: 0.3rem 0.75rem; border: 1px solid rgba(255,255,255,0.5); border-radius: 6px; background: transparent; color: #fff; cursor: pointer; font-size: 0.8rem; transition: all 0.15s; text-decoration: none; display: inline-block; }
 .btn-outline-sm:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
 .btn-solid-sm { padding: 0.3rem 0.85rem; border: none; border-radius: 6px; background: #fff; color: var(--accent); cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.15s; text-decoration: none; display: inline-block; }

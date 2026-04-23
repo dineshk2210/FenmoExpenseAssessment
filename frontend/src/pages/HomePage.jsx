@@ -1,9 +1,9 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { isLoggedIn } from "../api";
 import Layout from "../components/Layout";
 
 export default function HomePage() {
-  if (isLoggedIn()) return <Navigate to="/dashboard" replace />;
+  const authed = isLoggedIn();
 
   return (
     <Layout>
@@ -12,8 +12,14 @@ export default function HomePage() {
           <h1>Take Control of<br />Your <span className="highlight">Finances</span></h1>
           <p className="hero-sub">Track every rupee, understand your spending habits, and make smarter financial decisions — all in one simple tool.</p>
           <div className="hero-actions">
-            <Link to="/register" className="btn-primary">Start Tracking Free →</Link>
-            <Link to="/login" className="btn-ghost">I have an account</Link>
+            {authed ? (
+              <Link to="/dashboard" className="btn-primary">Go to Dashboard →</Link>
+            ) : (
+              <>
+                <Link to="/register" className="btn-primary">Start Tracking Free →</Link>
+                <Link to="/login" className="btn-ghost">I have an account</Link>
+              </>
+            )}
           </div>
         </section>
 
@@ -43,7 +49,7 @@ export default function HomePage() {
         <section className="cta-section">
           <h2>Ready to take control?</h2>
           <p>Join now and start understanding your spending in minutes.</p>
-          <Link to="/register" className="btn-primary">Create Free Account</Link>
+          <Link to={authed ? "/dashboard" : "/register"} className="btn-primary">{authed ? "Go to Dashboard" : "Create Free Account"}</Link>
         </section>
       </main>
     </Layout>
