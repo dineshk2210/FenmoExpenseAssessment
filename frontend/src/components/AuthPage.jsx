@@ -5,6 +5,7 @@ export default function AuthPage({ onAuth }) {
   const [view, setView] = useState("home"); // "home", "login", "register"
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState(null);
+  const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -26,7 +27,7 @@ export default function AuthPage({ onAuth }) {
   };
 
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
-  const goTo = (v) => { setView(v); setError(null); setForm({ name: "", email: "", password: "" }); };
+  const goTo = (v) => { setView(v); setError(null); setForm({ name: "", email: "", password: "" }); setShowPw(false); };
 
   if (view === "home") {
     return (
@@ -118,7 +119,10 @@ export default function AuthPage({ onAuth }) {
             </label>
             <label>
               Password
-              <input type="password" value={form.password} onChange={update("password")} required minLength={6} placeholder="Min 6 characters" />
+              <div className="pw-field">
+                <input type={showPw ? "text" : "password"} value={form.password} onChange={update("password")} required minLength={6} placeholder="Min 6 characters" />
+                <button type="button" className="pw-toggle" onClick={() => setShowPw(!showPw)} aria-label={showPw ? "Hide password" : "Show password"}>{showPw ? "🙈" : "👁️"}</button>
+              </div>
             </label>
             <button type="submit" disabled={loading}>{loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}</button>
           </form>
