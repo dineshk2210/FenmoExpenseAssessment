@@ -17,6 +17,8 @@ h2 { font-size: 1.2rem; margin-bottom: 0.75rem; }
 .filters { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .filters label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.875rem; font-weight: 500; }
 .filters select { padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px; }
+.clear-btn { align-self: flex-end; padding: 0.4rem 0.75rem; background: none; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.85rem; color: var(--danger); }
+.clear-btn:hover { background: #fef2f2; }
 
 /* Table */
 .expense-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }

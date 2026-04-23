@@ -1,6 +1,7 @@
 const CATEGORIES = ["Food", "Transport", "Entertainment", "Utilities", "Health", "Shopping", "Other"];
 
 export default function Filters({ category, sort, onCategoryChange, onSortChange }) {
+  const hasFilters = category !== "" || sort !== "recent";
   return (
     <div className="filters">
       <label>
@@ -21,6 +22,11 @@ export default function Filters({ category, sort, onCategoryChange, onSortChange
           <option value="amount_asc">Amount (low → high)</option>
         </select>
       </label>
+      {hasFilters && (
+        <button className="clear-btn" onClick={() => { onCategoryChange(""); onSortChange("recent"); }}>
+          Clear filters
+        </button>
+      )}
     </div>
   );
 }
